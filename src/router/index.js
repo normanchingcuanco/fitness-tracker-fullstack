@@ -5,10 +5,20 @@ import LoginView from '../pages/LoginView.vue'
 import WorkoutsView from '../pages/WorkoutsView.vue'
 
 const routes = [
+  {
+    path: '/',
+    redirect: () => {
+      const token = localStorage.getItem('token')
+      return token ? '/workouts' : '/login'
+    }
+  },
+
   { path: '/register', component: RegisterView },
+
   { path: '/login', component: LoginView },
-  { 
-    path: '/workouts', 
+
+  {
+    path: '/workouts',
     component: WorkoutsView,
     meta: { requiresAuth: true }
   }
@@ -19,7 +29,7 @@ const router = createRouter({
   routes
 })
 
-// Route Guard
+// 🔐 Route Guard
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
 
