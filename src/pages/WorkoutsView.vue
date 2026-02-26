@@ -13,7 +13,7 @@
       </button>
     </header>
 
-    <!-- Stats Summary -->
+    <!-- Stats -->
     <div class="stats-container">
       <div class="stat-card">
         <p>Total</p>
@@ -38,6 +38,7 @@
       >
         <div class="card-top">
           <h3>{{ workout.name }}</h3>
+
           <span
             :class="[
               'status-badge',
@@ -52,20 +53,29 @@
 
         <p class="duration">{{ workout.duration }}</p>
         <p class="date">{{ formatDate(workout.dateAdded) }}</p>
+
+        <div class="card-actions">
+          <button class="edit-btn" @click="openEditModal(workout)">
+            Edit
+          </button>
+          <button class="delete-btn" @click="deleteWorkout(workout._id)">
+            Delete
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Floating Add Button -->
-    <button id="addWorkout" class="fab" @click="showModal = true">
+    <!-- FAB -->
+    <button id="addWorkout" class="fab" @click="openAddModal">
       +
     </button>
 
     <!-- Modal -->
     <div v-if="showModal" class="modal-overlay">
       <div class="modal">
-        <h2>Add Workout</h2>
+        <h2>{{ isEditing ? 'Update Workout' : 'Add Workout' }}</h2>
 
-        <form @submit.prevent="addWorkout">
+        <form @submit.prevent="isEditing ? updateWorkout() : addWorkout()">
           <input v-model="name" placeholder="Workout Name" required />
           <input v-model="duration" placeholder="Duration" required />
 
@@ -76,7 +86,9 @@
           </select>
 
           <div class="modal-actions">
-            <button type="submit" class="primary-btn">Save</button>
+            <button type="submit" class="primary-btn">
+              {{ isEditing ? 'Update' : 'Save' }}
+            </button>
             <button type="button" @click="closeModal" class="secondary-btn">
               Cancel
             </button>
@@ -94,6 +106,8 @@ export default {
     return {
       workouts: [],
       showModal: false,
+      isEditing: false,
+      editId: null,
       name: '',
       duration: '',
       status: ''
@@ -114,6 +128,7 @@ export default {
   },
 
   methods: {
+
     logout() {
       localStorage.removeItem('token')
       this.$router.push('/login')
@@ -137,10 +152,28 @@ export default {
       this.workouts = data
     },
 
+    openAddModal() {
+      this.isEditing = false
+      this.editId = null
+      this.name = ''
+      this.duration = ''
+      this.status = ''
+      this.showModal = true
+    },
+
+    openEditModal(workout) {
+      this.isEditing = true
+      this.editId = workout._id
+      this.name = workout.name
+      this.duration = workout.duration
+      this.status = workout.status
+      this.showModal = true
+    },
+
     async addWorkout() {
       const token = localStorage.getItem('token')
 
-      const response = await fetch(
+      await fetch(
         'https://fitness-tracker-api-zjx6.onrender.com/workouts/addWorkout',
         {
           method: 'POST',
@@ -156,209 +189,90 @@ export default {
         }
       )
 
-      if (response.ok) {
-        this.closeModal()
-        this.fetchWorkouts()
-      }
+      this.closeModal()
+      this.fetchWorkouts()
+    },
+
+    async updateWorkout() {
+      const token = localStorage.getItem('token')
+
+      await fetch(
+        `https://fitness-tracker-api-zjx6.onrender.com/workouts/updateWorkout/${this.editId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            name: this.name,
+            duration: this.duration,
+            status: this.status
+          })
+        }
+      )
+
+      this.closeModal()
+      this.fetchWorkouts()
+    },
+
+    async deleteWorkout(id) {
+      const token = localStorage.getItem('token')
+
+      const confirmDelete = confirm('Delete this workout?')
+      if (!confirmDelete) return
+
+      await fetch(
+        `https://fitness-tracker-api-zjx6.onrender.com/workouts/deleteWorkout/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      this.fetchWorkouts()
     },
 
     closeModal() {
       this.showModal = false
-      this.name = ''
-      this.duration = ''
-      this.status = ''
+      this.isEditing = false
+      this.editId = null
     }
+
   }
 }
 </script>
 
 <style scoped>
-.app-container {
-  background: #EFE8DD;
-  min-height: 100vh;
-  padding: 30px;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
 
-/* Header */
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
+/* ADD BELOW EXISTING STYLE */
 
-.logo-section {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.logo-section img {
-  width: 150px;          /* 🔥 Increased size */
-}
-
-.logo-section h1 {
-  font-size: 30px;
-  font-weight: 600;
-  color: #2F5D50;
-}
-
-.logout-btn {
-  border: 1px solid #2F5D50;
-  background: transparent;
-  padding: 8px 18px;
-  border-radius: 24px;
-  color: #2F5D50;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.logout-btn:hover {
-  background: #2F5D50;
-  color: white;
-}
-
-/* Stats */
-.stats-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 25px;
-}
-
-.stat-card {
-  background: white;
-  padding: 18px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
-}
-
-.stat-card h3 {
-  color: #2F5D50;
-}
-
-/* Cards */
-.card-container {
-  display: grid;
-  gap: 18px;
-}
-
-.workout-card {
-  background: white;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  transition: transform 0.2s ease;
-}
-
-.workout-card:hover {
-  transform: translateY(-4px);
-}
-
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.status-badge {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  text-transform: capitalize;
-}
-
-.badge-completed {
-  background: #2F5D50;
-  color: white;
-}
-
-.badge-pending {
-  background: #D6C3B3;
-}
-
-.duration {
-  margin-top: 10px;
-  font-size: 15px;
-}
-
-.date {
-  font-size: 12px;
-  color: #777;
-  margin-top: 6px;
-}
-
-/* FAB */
-.fab {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: #2F5D50;
-  color: white;
-  border: none;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  font-size: 30px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.2);
-  cursor: pointer;
-}
-
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal {
-  background: white;
-  padding: 28px;
-  border-radius: 22px;
-  width: 90%;
-  max-width: 420px;
-}
-
-.modal input,
-.modal select {
-  width: 100%;
-  padding: 12px;
+.card-actions {
   margin-top: 14px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-}
-
-.modal-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 22px;
+  gap: 10px;
 }
 
-.primary-btn {
+.edit-btn {
+  flex: 1;
   background: #2F5D50;
   color: white;
   border: none;
-  padding: 12px;
-  flex: 1;
-  border-radius: 12px;
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
-.secondary-btn {
-  background: #E5E5E5;
+.delete-btn {
+  flex: 1;
+  background: #D66A6A;
+  color: white;
   border: none;
-  padding: 12px;
-  flex: 1;
-  border-radius: 12px;
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
-@media (min-width: 768px) {
-  .card-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 </style>
