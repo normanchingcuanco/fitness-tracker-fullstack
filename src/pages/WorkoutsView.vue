@@ -240,174 +240,234 @@ export default {
 
 <style scoped>
 
-.app-container {
-  min-height: 100vh;
-  background: #EFE8DD;
-}
+  /* ===============================
+     GLOBAL FONT
+  ================================ */
+  * {
+    font-family: 'Poppins', sans-serif;
+  }
 
-/* HEADER */
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 20px;
-}
+  /* ===============================
+     CONTAINER
+  ================================ */
+  .app-container {
+    min-height: 100vh;
+    background: #EFE8DD;
+  }
 
-.logo-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+  /* ===============================
+     HEADER
+  ================================ */
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+  }
 
-.logo-section img {
-  width: 110px;
-}
+  .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-.logo-section h1 {
-  font-size: 24px;
-  color: #2F5D50;
-  margin: 0;
-}
+  .logo-section img {
+    width: 110px;
+  }
 
-.logout-btn {
-  background: #C75C5C;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-}
+  .logo-section h1 {
+    font-weight: 700;
+    font-size: 22px;
+    color: #2F5D50;
+    letter-spacing: 0.5px;
+  }
 
-/* CARDS */
-.card-container {
-  padding: 20px;
-  display: grid;
-  gap: 18px;
-}
+  .logout-btn {
+    background: #2F5D50;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s ease;
+  }
 
-.workout-card {
-  background: white;
-  padding: 18px;
-  border-radius: 18px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-}
+  .logout-btn:hover {
+    background: #244a40;
+  }
 
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  /* ===============================
+     CARDS
+  ================================ */
+  .card-container {
+    padding: 24px;
+    display: grid;
+    gap: 20px;
+  }
 
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  color: white;
-}
+  .workout-card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    transition: 0.2s ease;
+  }
 
-.badge-completed {
-  background: #2F5D50;
-}
+  .workout-card:hover {
+    transform: translateY(-3px);
+  }
 
-.badge-pending {
-  background: #C75C5C;
-}
+  /* ===============================
+     STATUS BADGES
+  ================================ */
+  .status-badge {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: white;
+    font-weight: 500;
+  }
 
-.card-actions {
-  margin-top: 14px;
-  display: flex;
-  gap: 10px;
-}
+  .badge-completed {
+    background: #3BA776; /* fresher green */
+  }
 
-.edit-btn,
-.delete-btn,
-.complete-btn {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-}
+  .badge-pending {
+    background: #C75C5C;
+  }
 
-.edit-btn {
-  background: #2F5D50;
-  color: white;
-}
+  /* ===============================
+     BUTTONS
+  ================================ */
+  .card-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+  }
 
-.complete-btn {
-  background: #3B7DDD;
-  color: white;
-}
+  .edit-btn,
+  .complete-btn,
+  .delete-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s ease;
+  }
 
-.delete-btn {
-  background: #C75C5C;
-  color: white;
-}
+  /* Edit */
+  .edit-btn {
+    background: #2F5D50;
+    color: white;
+  }
 
-/* FAB */
-.fab {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  background: #2F5D50;
-  color: white;
-  border: none;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  font-size: 30px;
-  cursor: pointer;
-}
+  .edit-btn:hover {
+    background: #244a40;
+  }
 
-/* MODAL */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  /* Complete */
+  .complete-btn {
+    background: #3BA776;
+    color: white;
+  }
 
-.modal {
-  background: white;
-  padding: 24px;
-  border-radius: 20px;
-  width: 100%;
-  max-width: 420px;
-}
+  .complete-btn:hover {
+    background: #2f8f63;
+  }
 
-.modal input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 12px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-}
+  /* Delete */
+  .delete-btn {
+    background: #E06B6B;
+    color: white;
+  }
 
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 18px;
-}
+  .delete-btn:hover {
+    background: #c55353;
+  }
 
-.primary-btn {
-  flex: 1;
-  background: #2F5D50;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-}
+  /* ===============================
+     FAB
+  ================================ */
+  .fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #2F5D50;
+    color: white;
+    border: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    transition: 0.2s ease;
+  }
 
-.secondary-btn {
-  flex: 1;
-  background: #ddd;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-}
+  .fab:hover {
+    transform: scale(1.08);
+  }
+
+  /* ===============================
+     MODAL
+  ================================ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal {
+    background: white;
+    padding: 28px;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .modal input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .primary-btn {
+    flex: 1;
+    background: #2F5D50;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 500;
+    transition: 0.2s ease;
+  }
+
+  .primary-btn:hover {
+    background: #244a40;
+  }
+
+  .secondary-btn {
+    flex: 1;
+    background: #f1f1f1;
+    border: none;
+    padding: 12px;
+    border-radius: 14px;
+  }
 
 </style>
